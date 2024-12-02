@@ -36,9 +36,19 @@ public class Main {
         list1 = Arrays.stream(list1).sorted().toArray();
         list2 = Arrays.stream(list2).sorted().toArray();
 
-        for (int i = 0; i < list1.length; i++) {
-            distance += Math.abs(list1[i] - list2[i]);
+        for (int i: list1) {
+            int count = 0;
+            for (int j: list2) {
+                if (i == j) {
+                    count++;
+                }
+            }
+            distance += count*i;
         }
+
+
+
+
 
         System.out.println(distance);
 
