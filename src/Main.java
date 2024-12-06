@@ -1,6 +1,8 @@
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Main {
     public static void main(String[] args) throws IOException {
@@ -14,7 +16,7 @@ public class Main {
                 ch = (char) num;
                 if (ch == '\n') {
                     lines.add(line);
-                    line ="";
+                    line = "";
                     continue;
                 }
                 line += ch;
@@ -23,34 +25,24 @@ public class Main {
             e.printStackTrace();
         }
 
-        int[] list1 = new int[lines.size()];
-        int[] list2 = new int[lines.size()];
-        for (int i = 0; i < lines.size(); i++) {
-            String[] line = lines.get(i).split("   ");
-            list1[i] = Integer.parseInt(line[0]);
-            list2[i] = Integer.parseInt(line[1]);
-        }
+        AtomicInteger result = new AtomicInteger();
+        String line = "do()"+ lines.get(0);
+        String[] splitLine = line.split("don't\\(\\)");
+        for (String s : splitLine) {
+            s = s.substring(line.indexOf("do()"));
 
-        int distance = 0;
 
-        list1 = Arrays.stream(list1).sorted().toArray();
-        list2 = Arrays.stream(list2).sorted().toArray();
+            Pattern pattern = Pattern.compile("mul\\(\\d+,\\d+\\)");
+            Matcher matcher = pattern.matcher(s);
+            while (matcher.find()) {
+                String a = matcher.group();
+                a = a.substring(4, a.length() - 1);
+                String[] b = a.split(",");
+                result.addAndGet(Integer.parseInt(b[0]) * Integer.parseInt(b[1]));
 
-        for (int i: list1) {
-            int count = 0;
-            for (int j: list2) {
-                if (i == j) {
-                    count++;
-                }
             }
-            distance += count*i;
         }
-
-
-
-
-
-        System.out.println(distance);
+        System.out.println(result.get());
 
     }
 }
